@@ -8,7 +8,7 @@ function App() {
   const product: Product = { name: "Mug", price: 8 };
   return (
     <>
-      <div class={css({ fontSize: "5xl", fontWeight: "bold" })}>Hello 🐼!</div>
+      <div class={css({ fontSize: "2xl", fontWeight: "bold" })}>Hello 🐼!</div>
       <section class="shop">
         <Card {...product} />
       </section>
