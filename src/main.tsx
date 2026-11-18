@@ -1,38 +1,38 @@
-import "./style.css";
-import { css } from "../styled-system/css";
-import { stack } from "../styled-system/patterns/";
-
-import { button } from "./components/button.recipe";
-import { Card2, type Product } from "./other";
+import "./index.css";
 
 import { render } from "@solidjs/web";
-import { createSignal } from "solid-js";
+import { For } from "solid-js";
+import { css } from "../styled-system/css";
+import { Card } from "./components/ui/card";
+
+type Product = { name: string; description: string; price: number };
+
+const products: Product[] = [
+  { name: "Mug", description: "Ceramic, 350 ml", price: 8 },
+  { name: "Tumbler", description: "Steel, keeps cold 12h", price: 22 },
+  { name: "Teapot", description: "Cast iron, 1 litre", price: 45 },
+];
 
 function App() {
-  const [active, setActive] = createSignal(false);
-
-  const products: Product[] = [
-    { name: "Mug", price: 12 },
-    { name: "Notebook", price: 8 },
-    { name: "Pen", price: 3 },
-  ];
   return (
-    <>
-      <main class={stack({ gap: "4", p: "8" })}>
-        <h1 class={css({ fontSize: "2xl", fontWeight: "bold" })}>Hello</h1>
-        <button
-          class={button({ tone: active() ? "solid" : "ghost" })}
-          onClick={() => setActive((val) => !val)}
-        >
-          Toggle
-        </button>
-      </main>
-      <section class="shop">
-        {products.map((product) => (
-          <Card2 {...product} />
-        ))}
+    <main class={css({ p: "8", display: "flex", flexDirection: "column", gap: "6" })}>
+      <h1 class={css({ fontSize: "3xl", fontWeight: "bold" })}>Shop</h1>
+
+      <section class={css({ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "4" })}>
+        <For each={products}>
+          {(product, i) => (
+            <Card.Root variant={(["elevated", "outline", "subtle"] as const)[i()]}>
+              <Card.Header>
+                <Card.Title>{product.name}</Card.Title>
+                <Card.Description>{product.description}</Card.Description>
+              </Card.Header>
+              <Card.Body>In stock</Card.Body>
+              <Card.Footer class={css({ fontWeight: "semibold" })}>${product.price}</Card.Footer>
+            </Card.Root>
+          )}
+        </For>
       </section>
-    </>
+    </main>
   );
 }
 
