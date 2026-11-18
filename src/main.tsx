@@ -1,37 +1,38 @@
 import "./style.css";
 import { css } from "../styled-system/css";
-import { stack } from "../styled-system/patterns/";
-
 import { button } from "./components/button.recipe";
-import { Card2, type Product } from "./other";
 
 import { render } from "@solidjs/web";
 import { createSignal } from "solid-js";
 
-function App() {
-  const [active, setActive] = createSignal(false);
+const price = 12;
 
-  const products: Product[] = [
-    { name: "Mug", price: 12 },
-    { name: "Notebook", price: 8 },
-    { name: "Pen", price: 3 },
-  ];
+function App() {
+  const [quantity, setQuantity] = createSignal(1);
+  const total = () => quantity() * price;
+
   return (
     <>
-      <main class={stack({ gap: "4", p: "8" })}>
-        <h1 class={css({ fontSize: "2xl", fontWeight: "bold" })}>Hello</h1>
+      <span class={css({ display: "flex", gap: "1", p: "2" })}>
         <button
-          class={button({ tone: active() ? "solid" : "ghost" })}
-          onClick={() => setActive((val) => !val)}
+          class={button({ tone: "solid" })}
+          onClick={() => {
+            setQuantity((q) => Math.max(1, q - 1));
+          }}
         >
-          Toggle
+          -
         </button>
-      </main>
-      <section class="shop">
-        {products.map((product) => (
-          <Card2 {...product} />
-        ))}
-      </section>
+        <span class={css({ p: "2" })}>{quantity()} mugs</span>
+        <button
+          class={button({ tone: "solid" })}
+          onClick={() => {
+            setQuantity((q) => q + 1);
+          }}
+        >
+          +
+        </button>
+      </span>
+      <p>Total: ${total}</p>
     </>
   );
 }
