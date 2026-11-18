@@ -1,3 +1,5 @@
+@layer reset, base, token, recipes, utilities;
+
 .shop {
   display: flex;
   gap: 1rem;

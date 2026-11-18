@@ -1,8 +1,13 @@
 import { defineConfig } from "vite-plus";
 import solid from "@solidjs/vite-plugin";
+import pandacss from "@pandacss/vite";
 
 export default defineConfig({
-  plugins: [solid()],
+  plugins: [
+    // turns css() calls into plain class strings at build time
+    pandacss({ cwd: process.cwd(), transform: true }),
+    solid(),
+  ],
   staged: {
     "*": "vp check --fix",
   },

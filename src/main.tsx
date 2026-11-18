@@ -1,20 +1,18 @@
-import "./style.css";
+import { css } from "../styled-system/css";
+import "./index.css";
 
 import { render } from "@solidjs/web";
 import { Card, type Product } from "./other";
 
 function App() {
-  const products: Product[] = [
-    { name: "Mug", price: 12 },
-    { name: "Notebook", price: 8 },
-    { name: "Pen", price: 3 },
-  ];
+  const product: Product = { name: "Mug", price: 8 };
   return (
-    <section class="shop">
-      {products.map((prod) => (
-        <Card {...prod} />
-      ))}
-    </section>
+    <>
+      <div class={css({ fontSize: "5xl", fontWeight: "bold" })}>Hello 🐼!</div>
+      <section class="shop">
+        <Card {...product} />
+      </section>
+    </>
   );
 }
 
