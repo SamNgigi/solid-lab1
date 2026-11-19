@@ -1,5 +1,36 @@
 import { cva, sva, type RecipeVariantProps } from "../../styled-system/css";
 
+export const track_bar = sva({
+  slots: ["track", "bar"],
+  base: {
+    track: {
+      width: "[300px]",
+      height: "[20px]",
+      background: "[#eee]",
+      borderRadius: "[10px]",
+      overflow: "[hidden]",
+    },
+    bar: {
+      height: "[100%]",
+      transition: "[width 0.3s]",
+    },
+  },
+  variants: {
+    status: {
+      default: {
+        bar: { background: "[#446b9e]" },
+      },
+      low: {
+        bar: { background: "[#c0392b]" },
+      },
+      done: {
+        bar: { background: "[#27ae60]" },
+      },
+    },
+  },
+  defaultVariants: { status: "default" },
+});
+
 export const button = cva({
   base: { px: "4", py: "2", rounded: "md", fontWeight: "medium" },
   variants: {

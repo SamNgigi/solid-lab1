@@ -1,56 +1,43 @@
 import "./style.css";
-import { container, stack } from "../styled-system/patterns";
-import { button } from "./components/button.recipe";
+import { container } from "../styled-system/patterns";
+import { button, track_bar } from "./components/button.recipe";
 
 import { render } from "@solidjs/web";
-import { createSignal } from "solid-js";
+import { createSignal, createMemo } from "solid-js";
+
+const total = 8;
 
 function App() {
-  const [name, setName] = createSignal("");
-  const [agreed, setAgreed] = createSignal(false);
-  const [welcome, setWelcome] = createSignal("");
+  const [done, setDone] = createSignal(1);
+  const percent = () => Math.round((done() / total) * 100);
 
-  const submittable = () => name().trim() !== "" && agreed();
+  const status = createMemo(() =>
+    percent() < 30 ? "low" : percent() === 100 ? "done" : "default",
+  );
+  // console.log(status);
+
+  const classes = createMemo(() => track_bar({ status: status() }));
 
   return (
     <div class={container({ debug: true, p: "4", m: "4" })}>
-      <form
-        onSubmit={(event) => {
-          event.preventDefault();
-          setWelcome(`Welcome ${name()}!`);
-        }}
-      >
-        <div class={stack({ gap: "2" })}>
-          <p>
-            <input
-              id="name"
-              autocomplete="false"
-              placeholder="Your Name"
-              type="text"
-              value={name()}
-              onInput={(event) => setName(event.currentTarget.value)}
-            />
-          </p>
-          <p>
-            <label>
-              <input
-                id="tc"
-                type="checkbox"
-                checked={agreed()}
-                onClick={(event) => setAgreed(event.currentTarget.checked)}
-              />{" "}
-              I agree to the terms
-            </label>
-          </p>
-          <button
-            class={button({ tone: submittable() ? "solid" : "ghost" })}
-            disabled={!submittable()}
-          >
-            Sign Up
-          </button>
-          <p>{welcome()}</p>
-        </div>
-      </form>
+      <p>
+        {done()} of {total} tasks done{" "}
+        <button
+          class={button({ tone: "solid" })}
+          onClick={() => setDone((val) => Math.max(0, val - 1))}
+        >
+          -
+        </button>
+        <button
+          class={button({ tone: "solid" })}
+          onClick={() => setDone((val) => Math.min(total, val + 1))}
+        >
+          +
+        </button>
+      </p>
+      <div class={classes().track}>
+        <div class={classes().bar} style={{ width: `${percent()}%` }} />
+      </div>
     </div>
   );
 }
