@@ -1,38 +1,28 @@
 import "./style.css";
-import { css } from "../styled-system/css";
-import { button } from "./components/button.recipe";
+import { container } from "../styled-system/patterns";
+import Avatar from "./other";
 
 import { render } from "@solidjs/web";
 import { createSignal } from "solid-js";
 
-const price = 12;
-
 function App() {
-  const [quantity, setQuantity] = createSignal(1);
-  const total = () => quantity() * price;
+  const [name, setName] = createSignal("Ada Lovelace");
 
   return (
     <>
-      <span class={css({ display: "flex", gap: "1", p: "2" })}>
-        <button
-          class={button({ tone: "solid" })}
-          onClick={() => {
-            setQuantity((q) => Math.max(1, q - 1));
-          }}
-        >
-          -
-        </button>
-        <span class={css({ p: "2" })}>{quantity()} mugs</span>
-        <button
-          class={button({ tone: "solid" })}
-          onClick={() => {
-            setQuantity((q) => q + 1);
-          }}
-        >
-          +
-        </button>
-      </span>
-      <p>Total: ${total}</p>
+      <div class={container({ debug: true, p: "8" })}>
+        <input
+          id="set-name"
+          name="name"
+          autocomplete="false"
+          value={name()}
+          onInput={(event) => setName(event.currentTarget.value)}
+        />
+        <div>
+          <Avatar name={name()} />
+          <Avatar name={name()} size={96} />
+        </div>
+      </div>
     </>
   );
 }
