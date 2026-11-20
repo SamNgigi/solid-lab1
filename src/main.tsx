@@ -20,20 +20,24 @@ function App() {
       >
         Rotate cats
       </button>
-      <For each={cats()}>
-        {(cat, index) => (
-          <li>
-            <a target="_blank" href={`https://www.youtube.com/watch?v=${cat.id}`}>
-              {index() + 1} : {cat.name} -
-            </a>
-            <input
-              aria-label={`Note for ${cat.name}`}
-              placeholder="A note for this row"
-              type="text"
-            />
-          </li>
-        )}
-      </For>
+      <ul>
+        <For each={cats()} keyed={false}>
+          {(cat, index) => (
+            <li>
+              <a target="_blank" href={`https://www.youtube.com/watch?v=${cat().id}`}>
+                {index + 1} : {cat().name} -
+              </a>
+              <input
+                id={cat().id}
+                value=""
+                aria-label={`Note for ${cat.name}`}
+                placeholder="A note for this row"
+                type="text"
+              />
+            </li>
+          )}
+        </For>
+      </ul>
     </div>
   );
 }
