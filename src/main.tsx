@@ -2,7 +2,7 @@ import "./style.css";
 import { container } from "../styled-system/patterns";
 
 import { render } from "@solidjs/web";
-import { createSignal } from "solid-js";
+import { createSignal, Show, Switch, Match } from "solid-js";
 
 function App() {
   const [temp, setTemp] = createSignal(12);
@@ -18,8 +18,17 @@ function App() {
         onInput={(event) => setTemp(Number(event.currentTarget.value))}
       />
       {` ${temp()}°C`}
-      {temp() < 0 ? <p>Frost warning!</p> : <p>No frost tonight.</p>}
-      {temp() > 25 ? <p>Hot</p> : temp() > 10 ? <p>Mild</p> : <p>Cold</p>}
+      <Show when={temp() < 0} fallback={<p>No frost tonight</p>}>
+        <p>Frost warning!</p>
+      </Show>
+      <Switch fallback={<p>Cold</p>}>
+        <Match when={temp() > 25}>
+          <p>Hot</p>
+        </Match>
+        <Match when={temp() > 10}>
+          <p>Mild</p>
+        </Match>
+      </Switch>
     </div>
   );
 }
