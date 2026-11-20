@@ -12,22 +12,20 @@ function App() {
   const percent = () => Math.round((done() / total) * 100);
 
   const status = createMemo(() =>
-    percent() < 30 ? "low" : percent() === 100 ? "done" : "default",
+    percent() === 100 ? "done" : percent() < 30 ? "low" : "default",
   );
-  // console.log(status);
-
   const classes = createMemo(() => track_bar({ status: status() }));
 
   return (
-    <div class={container({ debug: true, p: "4", m: "4" })}>
+    <div class={container({ debug: true, p: "2", m: "2" })}>
       <p>
-        {done()} of {total} tasks done{" "}
         <button
           class={button({ tone: "solid" })}
           onClick={() => setDone((val) => Math.max(0, val - 1))}
         >
           -
         </button>
+        {` ${done()} of ${total} tasks done `}
         <button
           class={button({ tone: "solid" })}
           onClick={() => setDone((val) => Math.min(total, val + 1))}
