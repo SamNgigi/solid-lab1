@@ -1,4 +1,4 @@
-import { cva, sva, type RecipeVariantProps } from "../../styled-system/css";
+import { cva, sva, type RecipeVariantProps } from "@/styled-system/css";
 
 export const track_bar = sva({
   slots: ["track", "bar"],
@@ -32,17 +32,11 @@ export const track_bar = sva({
 });
 
 export const button = cva({
-  base: {
-    px: "4",
-    py: "2",
-    rounded: "md",
-    fontWeight: "medium",
-    _disabled: { opacity: 0.5, cursor: "not-allowed" },
-  },
+  base: { px: "4", py: "2", rounded: "md", fontWeight: "medium" },
   variants: {
     tone: {
-      solid: { bg: "blue.600", color: "white", _hover: { bg: "blue.700" } },
-      danger: { bg: "red.600", color: "white", _hover: { bg: "red.700" } },
+      solid: { bg: "blue.600", color: "white", _hover: { bg: "blue.500" } },
+      danger: { bg: "red.500", color: "white", _hover: { bg: "red.600" } },
       ghost: { bg: "transparent", _hover: { bg: "gray.100" } },
     },
   },

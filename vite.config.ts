@@ -8,6 +8,9 @@ export default defineConfig(({ command }) => ({
     pandacss({ transform: command === "build" }),
     solid(),
   ],
+  resolve: {
+    tsconfigPaths: true,
+  },
   staged: {
     "*": "vp check --fix",
   },

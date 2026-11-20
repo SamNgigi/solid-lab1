@@ -1,8 +1,38 @@
-import { css } from "../styled-system/css";
+import { css } from "@/styled-system/css";
+
+import { children, For } from "solid-js";
+import { type JSX } from "@solidjs/web";
+
+export function Steps(props: JSX.HTMLAttributes<HTMLElement>) {
+  const steps = children(() => props.children);
+  return (
+    <ol class={_steps}>
+      <For each={steps.toArray()}>
+        {(step, index) => (
+          <li>
+            <strong>Step {index() + 1}</strong>
+            {step}
+          </li>
+        )}
+      </For>
+    </ol>
+  );
+}
+
+const _steps = css({
+  "& li": {
+    my: "2",
+    py: "1",
+    px: "3",
+    borderLeft: "[4px solid #446b9e]",
+    listStyle: "none",
+  },
+  "& li p": { m: "0" },
+});
 
 export type AvatarProps = { name: string; size?: number | null };
 
-export default function Avatar(props: AvatarProps) {
+export function Avatar(props: AvatarProps) {
   const size = () => props.size ?? 48;
   const initials = () =>
     props.name
