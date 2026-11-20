@@ -3,7 +3,7 @@ import { container } from "../styled-system/patterns";
 import { button } from "./components/button.recipe";
 
 import { render } from "@solidjs/web";
-import { createSignal } from "solid-js";
+import { createSignal, For } from "solid-js";
 
 function App() {
   const [cats, setCats] = createSignal([
@@ -20,13 +20,20 @@ function App() {
       >
         Rotate cats
       </button>
-      <ul>
-        {cats().map((cat, id) => (
+      <For each={cats()}>
+        {(cat, index) => (
           <li>
-            {id + 1}: {cat.name}
+            <a target="_blank" href={`https://www.youtube.com/watch?v=${cat.id}`}>
+              {index() + 1} : {cat.name} -
+            </a>
+            <input
+              aria-label={`Note for ${cat.name}`}
+              placeholder="A note for this row"
+              type="text"
+            />
           </li>
-        ))}
-      </ul>
+        )}
+      </For>
     </div>
   );
 }
