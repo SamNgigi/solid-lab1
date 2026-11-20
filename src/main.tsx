@@ -1,34 +1,32 @@
 import "./style.css";
 import { container } from "../styled-system/patterns";
+import { button } from "./components/button.recipe";
 
 import { render } from "@solidjs/web";
-import { createSignal, Show, Switch, Match } from "solid-js";
+import { createSignal } from "solid-js";
 
 function App() {
-  const [temp, setTemp] = createSignal(12);
+  const [cats, setCats] = createSignal([
+    { id: "J---aiyznGQ", name: "Keyboard Cat" },
+    { id: "z_AbfPXTKms", name: "Maru" },
+    { id: "OUtn3pvWmpg", name: "Henri The Existential Cat" },
+  ]);
 
   return (
     <div class={container({ debug: true, p: "2", m: "2" })}>
-      <input
-        id="range"
-        min="-10"
-        max="40"
-        value={temp()}
-        type="range"
-        onInput={(event) => setTemp(Number(event.currentTarget.value))}
-      />
-      {` ${temp()}°C`}
-      <Show when={temp() < 0} fallback={<p>No frost tonight</p>}>
-        <p>Frost warning!</p>
-      </Show>
-      <Switch fallback={<p>Cold</p>}>
-        <Match when={temp() > 25}>
-          <p>Hot</p>
-        </Match>
-        <Match when={temp() > 10}>
-          <p>Mild</p>
-        </Match>
-      </Switch>
+      <button
+        class={button({ tone: "solid" })}
+        onClick={() => setCats((items) => [...items.slice(1), items[0]])}
+      >
+        Rotate cats
+      </button>
+      <ul>
+        {cats().map((cat, id) => (
+          <li>
+            {id + 1}: {cat.name}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
