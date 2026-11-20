@@ -1,43 +1,51 @@
 import "./style.css";
 import { container } from "../styled-system/patterns";
-import { button } from "./components/button.recipe";
+import { css } from "../styled-system/css";
+import { button, type ButtonVariants } from "./components/button.recipe";
 
-import { render } from "@solidjs/web";
-import { createSignal, For } from "solid-js";
+import { render, type JSX } from "@solidjs/web";
+import { createSignal, omit } from "solid-js";
+
+type ButtonProps = ButtonVariants & JSX.ButtonHTMLAttributes<HTMLButtonElement>;
+
+function Button(props: ButtonProps) {
+  const others = omit(props, "class", "tone", "children");
+  return (
+    <button {...others} class={button({ tone: props.tone })}>
+      {props.children}
+    </button>
+  );
+}
 
 function App() {
-  const [cats, setCats] = createSignal([
-    { id: "J---aiyznGQ", name: "Keyboard Cat" },
-    { id: "z_AbfPXTKms", name: "Maru" },
-    { id: "OUtn3pvWmpg", name: "Henri The Existential Cat" },
-  ]);
+  const [count, setCount] = createSignal(0);
 
   return (
     <div class={container({ debug: true, p: "2", m: "2" })}>
-      <button
-        class={button({ tone: "solid" })}
-        onClick={() => setCats((items) => [...items.slice(1), items[0]])}
-      >
-        Rotate cats
-      </button>
-      <ul>
-        <For each={cats()} keyed={false}>
-          {(cat, index) => (
-            <li>
-              <a target="_blank" href={`https://www.youtube.com/watch?v=${cat().id}`}>
-                {index + 1} : {cat().name} -
-              </a>
-              <input
-                id={cat().id}
-                value=""
-                aria-label={`Note for ${cat.name}`}
-                placeholder="A note for this row"
-                type="text"
-              />
-            </li>
-          )}
-        </For>
-      </ul>
+      <p>Saved {count()} times</p>
+      <div class={css({ display: "flex", width: "fit-content", gap: "2" })}>
+        <Button tone="solid" onClick={() => setCount((val) => val + 1)}>
+          Save
+        </Button>
+
+        <Button tone="danger" disabled={count() === 0} onClick={() => setCount(0)}>
+          Reset
+        </Button>
+
+        {/* <button */}
+        {/*   class={button({ tone: 'solid' })} */}
+        {/*   onClick={() => setCount((val) => val + 1)} */}
+        {/* > */}
+        {/*   Save */}
+        {/* </button> */}
+        {/* <button */}
+        {/*   class={button({ tone: count() === 0 ? 'ghost' : 'danger' })} */}
+        {/**/}
+        {/*   onClick={() => setCount(0)} */}
+        {/* > */}
+        {/*   Reset */}
+        {/* </button> */}
+      </div>
     </div>
   );
 }

@@ -32,10 +32,17 @@ export const track_bar = sva({
 });
 
 export const button = cva({
-  base: { px: "4", py: "2", rounded: "md", fontWeight: "medium" },
+  base: {
+    px: "4",
+    py: "2",
+    rounded: "md",
+    fontWeight: "medium",
+    _disabled: { opacity: 0.5, cursor: "not-allowed" },
+  },
   variants: {
     tone: {
       solid: { bg: "blue.600", color: "white", _hover: { bg: "blue.700" } },
+      danger: { bg: "red.600", color: "white", _hover: { bg: "red.700" } },
       ghost: { bg: "transparent", _hover: { bg: "gray.100" } },
     },
   },

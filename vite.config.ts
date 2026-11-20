@@ -2,10 +2,10 @@ import { defineConfig } from "vite-plus";
 import solid from "@solidjs/vite-plugin";
 import pandacss from "@pandacss/vite";
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
   plugins: [
     // turns css() calls into plain class strings at build time
-    pandacss({ cwd: process.cwd(), transform: true }),
+    pandacss({ transform: command === "build" }),
     solid(),
   ],
   staged: {
@@ -17,4 +17,4 @@ export default defineConfig({
     rules: { "vite-plus/prefer-vite-plus-imports": "error" },
     options: { typeAware: true, typeCheck: true },
   },
-});
+}));
