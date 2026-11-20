@@ -1,41 +1,25 @@
 import "./style.css";
 import { container } from "../styled-system/patterns";
-import { button, track_bar } from "./components/button.recipe";
 
 import { render } from "@solidjs/web";
-import { createSignal, createMemo } from "solid-js";
-
-const total = 8;
+import { createSignal } from "solid-js";
 
 function App() {
-  const [done, setDone] = createSignal(1);
-  const percent = () => Math.round((done() / total) * 100);
-
-  const status = createMemo(() =>
-    percent() === 100 ? "done" : percent() < 30 ? "low" : "default",
-  );
-  const classes = createMemo(() => track_bar({ status: status() }));
+  const [temp, setTemp] = createSignal(12);
 
   return (
     <div class={container({ debug: true, p: "2", m: "2" })}>
-      <p>
-        <button
-          class={button({ tone: "solid" })}
-          onClick={() => setDone((val) => Math.max(0, val - 1))}
-        >
-          -
-        </button>
-        {` ${done()} of ${total} tasks done `}
-        <button
-          class={button({ tone: "solid" })}
-          onClick={() => setDone((val) => Math.min(total, val + 1))}
-        >
-          +
-        </button>
-      </p>
-      <div class={classes().track}>
-        <div class={classes().bar} style={{ width: `${percent()}%` }} />
-      </div>
+      <input
+        id="range"
+        min="-10"
+        max="40"
+        value={temp()}
+        type="range"
+        onInput={(event) => setTemp(Number(event.currentTarget.value))}
+      />
+      {` ${temp()}°C`}
+      {temp() < 0 ? <p>Frost warning!</p> : <p>No frost tonight.</p>}
+      {temp() > 25 ? <p>Hot</p> : temp() > 10 ? <p>Mild</p> : <p>Cold</p>}
     </div>
   );
 }
