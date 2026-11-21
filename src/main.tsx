@@ -1,4 +1,4 @@
-import { render } from "@solidjs/web";
+import { render, type JSX } from "@solidjs/web";
 import { createSignal, For } from "solid-js";
 
 import "./style.css";
@@ -27,27 +27,27 @@ function Card(props: ViewProps) {
   );
 }
 
-function Row() {
+function Row(): JSX.Element {
   throw new Error("TODO: Not Yet Implemented.");
 }
-function Tag() {
+function Tag(): JSX.Element {
   throw new Error("TODO: Not Yet Implemented.");
 }
 
 const views = { card: Card, row: Row, tag: Tag };
+type Views = keyof typeof views;
 
 function App() {
-  const [view, setView] = createSignal("card");
+  const [view, setView] = createSignal<Views>("card");
 
-  console.log(`current_view: ${view}`);
-  console.log(`all_views: ${views}`);
+  console.log(`current_view: ${view()}`);
 
   return (
     <div class={container({ debug: true, p: "2", m: "2" })}>
       <select
         name="view"
         id="view-selector"
-        onChange={(event) => setView(event.currentTarget.value)}
+        onChange={(event) => setView(event.currentTarget.value as Views)}
       >
         <option value="card">Cards</option>
         <option value="row">Rows</option>
