@@ -1,4 +1,4 @@
-import { render, type JSX } from "@solidjs/web";
+import { render, dynamic } from "@solidjs/web";
 import { createSignal, For } from "solid-js";
 
 import "./style.css";
@@ -8,8 +8,8 @@ type Product = { id: number; name: string; price: number };
 type ViewProps = { product: Product };
 const products: Product[] = [
   { id: 1, name: "Mug", price: 12 },
-  { id: 2, name: "Notebook", price: 8 },
-  { id: 3, name: "Pen", price: 3 },
+  { id: 1, name: "Notebook", price: 8 },
+  { id: 1, name: "Pen", price: 3 },
 ];
 
 function Card(props: ViewProps) {
@@ -27,33 +27,41 @@ function Card(props: ViewProps) {
   );
 }
 
-function Row(): JSX.Element {
-  throw new Error("TODO: Not Yet Implemented.");
+function Row(props: ViewProps) {
+  return (
+    <p>
+      {props.product.name} . ${props.product.price}
+    </p>
+  );
 }
-function Tag(): JSX.Element {
-  throw new Error("TODO: Not Yet Implemented.");
+
+function Tag(props: ViewProps) {
+  return (
+    <strong style={{ "margin-left": "0.5rem", "margin-right": "1rem" }}>
+      {props.product.name}
+    </strong>
+  );
 }
 
 const views = { card: Card, row: Row, tag: Tag };
-type Views = keyof typeof views;
+type ViewT = keyof typeof views;
 
 function App() {
-  const [view, setView] = createSignal<Views>("card");
-
-  console.log(`current_view: ${view()}`);
+  const [view, setView] = createSignal<ViewT>("card");
+  const View = dynamic(() => views[view()]);
 
   return (
-    <div class={container({ debug: true, p: "2", m: "2" })}>
+    <div class={container({ debug: false, p: "2", m: "2" })}>
       <select
         name="view"
         id="view-selector"
-        onChange={(event) => setView(event.currentTarget.value as Views)}
+        onChange={(event) => setView(event.currentTarget.value as ViewT)}
       >
         <option value="card">Cards</option>
         <option value="row">Rows</option>
         <option value="tag">Tags</option>
       </select>
-      <For each={products}>{(product) => <Card product={product} />}</For>
+      <For each={products}>{(product) => <View product={product} />}</For>
     </div>
   );
 }
