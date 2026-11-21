@@ -35,7 +35,7 @@ export const button = cva({
   base: { px: "4", py: "2", rounded: "md", fontWeight: "medium" },
   variants: {
     tone: {
-      solid: { bg: "blue.600", color: "white", _hover: { bg: "blue.500" } },
+      solid: { bg: "blue.500", color: "white", _hover: { bg: "blue.600" } },
       danger: { bg: "red.500", color: "white", _hover: { bg: "red.600" } },
       ghost: { bg: "transparent", _hover: { bg: "gray.100" } },
     },

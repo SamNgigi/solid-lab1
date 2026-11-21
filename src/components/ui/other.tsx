@@ -1,7 +1,17 @@
 import { css } from "@/styled-system/css";
 
-import { children, For } from "solid-js";
+import { type Accessor, createSignal, children, For } from "solid-js";
 import { type JSX } from "@solidjs/web";
+
+export interface Cart {
+  count: Accessor<number>; // same as () => number
+  add: () => void;
+}
+
+export function createCart(): Cart {
+  const [count, setCount] = createSignal(0);
+  return { count, add: () => setCount((val) => val + 1) };
+}
 
 export function Steps(props: JSX.HTMLAttributes<HTMLElement>) {
   const steps = children(() => props.children);
