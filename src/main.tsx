@@ -1,47 +1,44 @@
 import { render, type JSX } from "@solidjs/web";
-// import { createSignal, type Signal } from 'solid-js';
 
 import "./style.css";
 import { container } from "@/styled-system/patterns";
 import { css } from "@/styled-system/css";
 import { button } from "@/components/recipes/button.recipe";
-import { type Cart, createCart } from "@/components/ui/other";
+import { CartProvider, useCart, type Cart, type CartProps } from "@/components/ui/other";
 
-type CartProps = {
-  name?: string;
-  cart: Cart;
-};
-
-function Header(props: CartProps): JSX.Element {
-  return <h1>Shop . {props.cart.count()} in cart</h1>;
+function Header(): JSX.Element {
+  const cart: Cart = useCart();
+  return <h1>Shop . {cart.count()} in cart</h1>;
 }
 
 function Product(props: CartProps): JSX.Element {
+  const cart: Cart = useCart();
   return (
     <p class={css({ display: "flex", width: "fit-content", gap: "2" })}>
       {props.name}
-      <button class={button({ tone: "solid" })} onClick={props.cart.add}>
+      <button class={button({ tone: "solid" })} onClick={cart.add}>
         Add to Cart
       </button>
     </p>
   );
 }
 
-function Shop(props: CartProps) {
+function Shop() {
   return (
     <>
-      <Product name="Mug" cart={props.cart} />
-      <Product name="Notebook" cart={props.cart} />
+      <Product name="Mug" />
+      <Product name="Notebook" />
     </>
   );
 }
 
 function App() {
-  const cart = createCart();
   return (
     <div class={container({ debug: true, p: "2", m: "2" })}>
-      <Header cart={cart} />
-      <Shop cart={cart} />
+      <CartProvider>
+        <Header />
+        <Shop />
+      </CartProvider>
     </div>
   );
 }

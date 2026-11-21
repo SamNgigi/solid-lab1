@@ -1,11 +1,24 @@
 import { css } from "@/styled-system/css";
 
-import { type Accessor, createSignal, children, For } from "solid-js";
+import { type Accessor, createContext, useContext, createSignal, children, For } from "solid-js";
 import { type JSX } from "@solidjs/web";
 
-export interface Cart {
-  count: Accessor<number>; // same as () => number
+/** START: 2.15 Componets: Context */
+
+type Cart = {
+  count: Accessor<number>;
   add: () => void;
+};
+type CartProps = { name?: string | null } & JSX.HTMLAttributes<HTMLElement>;
+
+export const CartContext = createContext<Cart>();
+
+export function CartProvider(props: CartProps): JSX.Element {
+  return <CartContext value={createCart()}>{props.children}</CartContext>;
+}
+
+export function useCart() {
+  return useContext(CartContext);
 }
 
 export function createCart(): Cart {
@@ -13,6 +26,11 @@ export function createCart(): Cart {
   return { count, add: () => setCount((val) => val + 1) };
 }
 
+export type { Cart, CartProps };
+
+/** END: 2.15 Componets: Context */
+
+/** START: 2.14 Componets: Children */
 export function Steps(props: JSX.HTMLAttributes<HTMLElement>) {
   const steps = children(() => props.children);
   return (
@@ -39,7 +57,9 @@ const _steps = css({
   },
   "& li p": { m: "0" },
 });
+/** END: 2.14 Componets: Children */
 
+/** START: 2.7 Componets: Reactive props */
 export type AvatarProps = { name: string; size?: number | null };
 
 export function Avatar(props: AvatarProps) {
@@ -78,3 +98,4 @@ const avatar = css({
   height: "var(--avatar-size)",
   fontSize: "var(--avatar-font-size)",
 });
+/** END: 2.7 Componets: Reactive props*/
