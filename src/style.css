@@ -1,33 +1,14 @@
 @layer reset, base, tokens, recipes, utilities;
 
 @layer base {
-  .app-container {
-    width: 200px;
-    height: 100px;
-    overflow: hidden;
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
-
-  .dark .popup {
-    color: #333;
-  }
-
-  .popup {
-    position: relative;
-    z-index: 2;
-    background: #ddd;
-    padding: 1rem;
-    min-height: 200px;
-    min-width: 200px;
-  }
-
-  .popup::after {
-    content: " ";
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    margin-left: -5px;
-    border-width: 5px;
-    border-style: solid;
-    border-color: transparent transparent #ddd transparent;
+  html,
+  body {
+    margin: 0;
+    height: 100%;
   }
 }
