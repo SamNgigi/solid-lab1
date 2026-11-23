@@ -1,5 +1,5 @@
 import { render } from "@solidjs/web";
-import { createSignal, createMemo, For, Loading } from "solid-js";
+import { createSignal, createMemo, For, Loading, isPending, latest } from "solid-js";
 
 import "./style.css";
 import { css } from "@/styled-system/css";
@@ -16,18 +16,16 @@ function App() {
   const [tab, setTab] = createSignal("Profile");
   const content = createMemo(() => fetchTab(tab()));
 
-  const active = (name: string) => tab() === name;
-
   return (
     <div class={css({ debug: true, mt: "1" })}>
       <div class={css({ display: "flex", p: "0.5", gap: "0.5" })}>
         <For each={tabs}>
-          {(tab) => (
+          {(name) => (
             <button
-              class={button({ tone: active(tab) ? "solid" : "solid2" })}
-              onClick={() => setTab(tab)}
+              class={button({ tone: latest(tab) === name ? "solid" : "solid2" })}
+              onClick={() => setTab(name)}
             >
-              {tab}
+              {name}
             </button>
           )}
         </For>
@@ -37,7 +35,7 @@ function App() {
           class={css({
             padding: "[0.5, 0]",
             transition: "[opacity 0.2s]",
-            opacity: "none",
+            opacity: isPending(content) ? "0.4" : "none",
           })}
         >
           {content()}
