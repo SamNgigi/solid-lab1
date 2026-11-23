@@ -1,54 +1,37 @@
-import { render, For } from "@solidjs/web";
-import { createSignal, createProjection } from "solid-js";
+import { render } from "@solidjs/web";
+import { createSignal, createMemo, Loading, isPending } from "solid-js";
 
 import "./style.css";
 import { css } from "@/styled-system/css";
 
-const li2 = css({
-  listStyle: "none",
-  padding: "[2px 8px]",
-  cursor: "pointer",
-  "&[data-active]": {
-    background: "[#446b9e]",
-    color: "white",
-  },
-});
+async function fetchUser(id: string) {
+  await new Promise((resolve) => setTimeout(resolve, 500));
+  return { id, name: `Explorer ${id}`, joined: 2020 + (Number(id) % 7) };
+}
 
-const rows = Array.from({ length: 1000 }, (_, i) => ({ id: i, label: `Row ${i}` }));
 function App() {
-  const [selected, setSelected] = createSignal(0);
-
-  let previous: number;
-  const selection = createProjection((draft: Record<number, boolean>) => {
-    const id = selected();
-    if (previous !== undefined) delete draft[previous];
-    draft[id] = true;
-    previous = id;
-  }, {});
-
-  let checks = 0;
-  const isSelected = (id: number) => {
-    checks++;
-    return !!selection[id];
-  };
-
-  const select = (id: number) => {
-    checks = 0;
-    setSelected(id);
-    setTimeout(() => console.log(`${checks} rows checked`));
-  };
+  const [userId, setUserId] = createSignal("1");
+  const user = createMemo(() => fetchUser(userId()));
 
   return (
-    <div class={css({ debug: true })}>
-      <ul>
-        <For each={rows}>
-          {(row) => (
-            <li class={li2} data-active={isSelected(row.id)} onClick={() => select(row.id)}>
-              {row.label}
-            </li>
-          )}
-        </For>
-      </ul>
+    <div class={css({ debug: true, mt: "1" })}>
+      <label>
+        User ID{" "}
+        <input
+          id="num"
+          name="num"
+          type="number"
+          min="1"
+          value={userId()}
+          onInput={(event) => setUserId(event.currentTarget.value)}
+        />
+      </label>
+      <Loading fallback={<p>Loading user...</p>}>
+        <h2 class={css({ fontSize: "2xl" })}>
+          Username: {user().name} {isPending(user) ? "(updating...)" : ""}
+        </h2>
+        <p>Joined in {user().joined}</p>
+      </Loading>
     </div>
   );
 }
