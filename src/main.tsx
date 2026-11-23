@@ -1,46 +1,47 @@
 import { render } from "@solidjs/web";
-import { createSignal, createMemo, Loading } from "solid-js";
+import { createSignal, createMemo, For, Loading } from "solid-js";
 
 import "./style.css";
 import { css } from "@/styled-system/css";
+import { button } from "@/components/recipes/button.recipe";
 
-const temps = { Oslo: 4, Lisbon: 21, Tokyo: 16 };
-type City = keyof typeof temps;
-type ForecastT = { city: string; temp: number; sky: string };
+const tabs = ["Profile", "Posts", "Settings"];
 
-async function fetchForecast(city: string): Promise<ForecastT> {
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-  return { city, temp: temps[city as City], sky: city === "Oslo" ? "Snow" : "Sunny" };
-}
-
-type Props = { city: City };
-
-function Forecast(props: Props) {
-  const forecast = createMemo(() => fetchForecast(props.city));
-  return (
-    <p>
-      {forecast().city}: {forecast().temp}°C, {forecast().sky}
-    </p>
-  );
+async function fetchTab(tab: string) {
+  await new Promise((resolve) => setTimeout(resolve, 800));
+  return `This is the ${tab} page.`;
 }
 
 function App() {
-  const [city, setCity] = createSignal<City>("Oslo");
+  const [tab, setTab] = createSignal("Profile");
+  const content = createMemo(() => fetchTab(tab()));
+
+  const active = (name: string) => tab() === name;
 
   return (
     <div class={css({ debug: true, mt: "1" })}>
-      <h1 class={css({ fontSize: "2xl" })}>Weather</h1>
-      <select
-        name="city"
-        id="city"
-        onChange={(event) => setCity(event.currentTarget.value as City)}
-      >
-        <option value="oslo">Oslo</option>
-        <option value="lisbon">Lisbon</option>
-        <option value="tokyo">Tokyo</option>
-      </select>
-      <Loading on={city()} fallback={<p>Loading forecast...</p>}>
-        <Forecast city={city()} />
+      <div class={css({ display: "flex", p: "0.5", gap: "0.5" })}>
+        <For each={tabs}>
+          {(tab) => (
+            <button
+              class={button({ tone: active(tab) ? "solid" : "solid2" })}
+              onClick={() => setTab(tab)}
+            >
+              {tab}
+            </button>
+          )}
+        </For>
+      </div>
+      <Loading fallback={<p>Loading...</p>}>
+        <div
+          class={css({
+            padding: "[0.5, 0]",
+            transition: "[opacity 0.2s]",
+            opacity: "none",
+          })}
+        >
+          {content()}
+        </div>
       </Loading>
     </div>
   );
