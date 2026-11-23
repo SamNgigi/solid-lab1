@@ -2,18 +2,15 @@ import { render, For } from "@solidjs/web";
 import { createSignal } from "solid-js";
 
 import "./style.css";
-import { css, cva } from "@/styled-system/css";
+import { css } from "@/styled-system/css";
 
-const li = cva({
-  base: { listStyle: "none", p: "[2px 8px]", cursor: "pointer" },
-  variants: {
-    active: {
-      true: {
-        bg: "[#446b9e]",
-        color: "white",
-      },
-      false: {},
-    },
+const li2 = css({
+  listStyle: "none",
+  padding: "[2px 8px]",
+  cursor: "pointer",
+  "&[data-active]": {
+    background: "[#446b9e]",
+    color: "white",
   },
 });
 
@@ -37,7 +34,7 @@ function App() {
       <ul>
         <For each={rows}>
           {(row) => (
-            <li class={li({ active: isSelected(row.id) })} onClick={() => select(row.id)}>
+            <li class={li2} data-active={isSelected(row.id)} onClick={() => select(row.id)}>
               {row.label}
             </li>
           )}
