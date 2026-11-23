@@ -7,25 +7,25 @@ export const grid = sva({
       display: "grid",
       flex: "1",
       minH: "0",
-      overflow: "auto",
-      gridTemplateColumns: "repeat(3, minmax(0, 300px))",
-      gridTemplateRows: "repeat(3, minmax(0, 300px))",
+      overflowY: "auto",
+      padding: "[2%]",
+      gridAutoColumns: "[200px]",
+      gridAutoRows: "[auto]",
+      gridTemplateAreas: `
+        "bx1 bx1 bx2 bx3"
+        "bx1 bx1 bx4 bx5"
+      `,
       gap: "[1em]",
-
-      justifyItems: "center",
-      alignItems: "center",
 
       justifyContent: "center",
       alignContent: "center",
     },
     item: {
-      h: "[100px]",
-      w: "[100px]",
       p: "8",
       bg: "blue.500",
       color: "white",
       textAlign: "center",
-      rounded: "lg",
+      rounded: "xs",
       fontSize: "4xl",
     },
   },
@@ -36,6 +36,13 @@ export const grid = sva({
         item: { debug: true },
       },
       false: {},
+    },
+    area: {
+      bx1: { item: { gridArea: "bx1" } },
+      bx2: { item: { gridArea: "bx2" } },
+      bx3: { item: { gridArea: "bx3" } },
+      bx4: { item: { gridArea: "bx4" } },
+      bx5: { item: { gridArea: "bx5" } },
     },
   },
   defaultVariants: { debug: true },

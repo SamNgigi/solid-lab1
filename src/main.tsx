@@ -1,14 +1,10 @@
-import { render, Repeat } from "@solidjs/web";
-import { createSignal } from "solid-js";
+import { render } from "@solidjs/web";
 
 import "./style.css";
 import { css } from "@/styled-system/css";
-import { button } from "@/components/recipes/button.recipe";
 import { grid } from "@/components/recipes/layout.recipe";
 
 function App() {
-  const [item, setItems] = createSignal(9);
-  const classes = grid();
   return (
     <div
       class={css({
@@ -18,25 +14,12 @@ function App() {
         overflow: "hidden",
       })}
     >
-      <div class={css({ debug: true, display: "flex", my: "1", flexShrink: "0" })}>
-        <button
-          class={button({ tone: "solid" })}
-          onClick={() => setItems((val) => Math.max(0, val - 1))}
-        >
-          -
-        </button>
-        <p>{item()} items</p>
-        <button
-          class={button({ tone: "solid" })}
-          onClick={() => setItems((val) => Math.min(9, val + 1))}
-        >
-          +
-        </button>
-      </div>
-      <div class={classes.container}>
-        <Repeat count={item()} fallback={<span>No starts</span>}>
-          {(index) => <div class={classes.item}>Item {index + 1}</div>}
-        </Repeat>
+      <div class={grid().container}>
+        <div class={grid({ area: "bx1" }).item}>Item 1</div>
+        <div class={grid({ area: "bx2" }).item}>Item 2</div>
+        <div class={grid({ area: "bx3" }).item}>Item 3</div>
+        <div class={grid({ area: "bx4" }).item}>Item 4</div>
+        <div class={grid({ area: "bx5" }).item}>Item 5</div>
       </div>
     </div>
   );
