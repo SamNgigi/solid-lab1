@@ -1,5 +1,5 @@
 import { render, For } from "@solidjs/web";
-import { createSignal } from "solid-js";
+import { createSignal, createProjection } from "solid-js";
 
 import "./style.css";
 import { css } from "@/styled-system/css";
@@ -17,10 +17,19 @@ const li2 = css({
 const rows = Array.from({ length: 1000 }, (_, i) => ({ id: i, label: `Row ${i}` }));
 function App() {
   const [selected, setSelected] = createSignal(0);
+
+  let previous: number;
+  const selection = createProjection((draft: Record<number, boolean>) => {
+    const id = selected();
+    if (previous !== undefined) delete draft[previous];
+    draft[id] = true;
+    previous = id;
+  }, {});
+
   let checks = 0;
   const isSelected = (id: number) => {
     checks++;
-    return selected() === id;
+    return !!selection[id];
   };
 
   const select = (id: number) => {
