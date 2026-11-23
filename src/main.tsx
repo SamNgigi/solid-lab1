@@ -1,5 +1,5 @@
 import { render } from "@solidjs/web";
-import { createSignal, createMemo } from "solid-js";
+import { createSignal, createMemo, Loading } from "solid-js";
 
 import "./style.css";
 import { css } from "@/styled-system/css";
@@ -29,7 +29,7 @@ function App() {
 
   return (
     <div class={css({ debug: true, mt: "1" })}>
-      <h1></h1>
+      <h1 class={css({ fontSize: "2xl" })}>Weather</h1>
       <select
         name="city"
         id="city"
@@ -39,7 +39,9 @@ function App() {
         <option value="lisbon">Lisbon</option>
         <option value="tokyo">Tokyo</option>
       </select>
-      <Forecast city={city()} />
+      <Loading on={city()} fallback={<p>Loading forecast...</p>}>
+        <Forecast city={city()} />
+      </Loading>
     </div>
   );
 }
