@@ -29,14 +29,6 @@ export const flex = sva({
       },
       false: {},
     },
-    // position: {
-    //   start: {
-    //     container: { justifyContent: "start" },
-    //   },
-    //   end: {
-    //     container: { justifyContent: "end" },
-    //   }
-    // }
   },
   defaultVariants: { debug: true },
 });

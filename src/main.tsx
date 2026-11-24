@@ -2,34 +2,27 @@ import { render } from "@solidjs/web";
 
 import "./style.css";
 import { cx } from "@/styled-system/css";
-import { flexContainer, flexBox } from "@/components/recipes/flex.recipe";
+import { flexContainer, flexBox, mainContainer } from "@/components/recipes/flex.recipe";
 
 function App() {
   return (
-    <div class={flexContainer({ hpos: "between" })}>
+    <div class={cx(mainContainer(), flexContainer())}>
       <div
-        class={cx(
-          flexBox(),
-          flexContainer({
-            hpos: "center",
-            vpos: "center",
-          }),
-        )}
+        class={cx(flexContainer({ jc: "center", ai: "center" }), flexBox({ grow: "2x", bp: "sm" }))}
       >
         <div class={flexBox({ size: "sm" })}>1</div>
       </div>
-      <div
-        class={cx(
-          flexBox(),
-          flexContainer({
-            hpos: "evenly",
-            vpos: "center",
-          }),
-        )}
-      >
-        <div class={flexBox({ size: "sm" })}>A</div>
-        <div class={flexBox({ size: "sm" })}>B</div>
-        <div class={flexBox({ size: "sm" })}>C</div>
+      <div class={cx(flexContainer({ jc: "center", ai: "center" }), flexBox())}>
+        <div class={flexBox({ size: "sm" })}>2</div>
+      </div>
+      <div class={cx(flexContainer({ jc: "center", ai: "center" }), flexBox())}>
+        <div class={flexBox({ size: "sm" })}>3</div>
+      </div>
+      <div class={cx(flexContainer({ jc: "center", ai: "center" }), flexBox())}>
+        <div class={flexBox({ size: "sm" })}>4</div>
+      </div>
+      <div class={cx(flexContainer({ jc: "center", ai: "center" }), flexBox())}>
+        <div class={flexBox({ size: "sm" })}>5</div>
       </div>
     </div>
   );
