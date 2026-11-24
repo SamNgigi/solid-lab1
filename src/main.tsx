@@ -1,36 +1,35 @@
 import { render } from "@solidjs/web";
 
 import "./style.css";
-import { css } from "@/styled-system/css";
-import { flex } from "@/components/recipes/layout.recipe";
+import { cx } from "@/styled-system/css";
+import { flexContainer, flexBox } from "@/components/recipes/flex.recipe";
 
 function App() {
-  // console.log(setCount((v) => v + 1));
-
   return (
-    <div
-      class={css({
-        display: "flex",
-        minH: "[100svh]",
-        justifyContent: "space-between",
-        flexShrink: "0",
-      })}
-    >
+    <div class={flexContainer({ hpos: "between" })}>
       <div
-        class={css({
-          bg: "amber.500",
-          color: "white",
-          h: "[200px]",
-          w: "[200px]",
-        })}
+        class={cx(
+          flexBox(),
+          flexContainer({
+            hpos: "center",
+            vpos: "center",
+          }),
+        )}
       >
-        Left Side
+        <div class={flexBox({ size: "sm" })}>1</div>
       </div>
-      <div class={[flex().container]}>
-        <div class={flex().item}>Item 1</div>
-        <div class={flex().item}>Item 2</div>
-        <div class={flex().item}>Item 3</div>
-        <div class={flex().item}>Item 4</div>
+      <div
+        class={cx(
+          flexBox(),
+          flexContainer({
+            hpos: "evenly",
+            vpos: "center",
+          }),
+        )}
+      >
+        <div class={flexBox({ size: "sm" })}>A</div>
+        <div class={flexBox({ size: "sm" })}>B</div>
+        <div class={flexBox({ size: "sm" })}>C</div>
       </div>
     </div>
   );
