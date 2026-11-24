@@ -9,6 +9,7 @@ export const flexContainer = cva({
     debug: true,
     display: "flex",
     gap: "1",
+    flexWrap: { smDown: "wrap" },
   },
   variants: {
     jc: {
