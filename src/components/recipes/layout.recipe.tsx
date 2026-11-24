@@ -1,5 +1,46 @@
 import { sva } from "@/styled-system/css";
 
+export const flex = sva({
+  slots: ["container", "item"],
+  base: {
+    container: {
+      minH: "[100svh]",
+      gap: "1",
+      display: "flex",
+      justifyContent: "end",
+      // flexWrap: "wrap",
+    },
+    item: {
+      bg: "blue.500",
+      p: "8",
+      color: "white",
+      h: "[200px]",
+      w: "[200px]",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+  },
+  variants: {
+    debug: {
+      true: {
+        container: { debug: true },
+        item: { debug: true },
+      },
+      false: {},
+    },
+    // position: {
+    //   start: {
+    //     container: { justifyContent: "start" },
+    //   },
+    //   end: {
+    //     container: { justifyContent: "end" },
+    //   }
+    // }
+  },
+  defaultVariants: { debug: true },
+});
+
 export const grid = sva({
   slots: ["container", "item"],
   base: {
@@ -9,14 +50,7 @@ export const grid = sva({
       minH: "0",
       overflowY: "auto",
       padding: "[2%]",
-      gridAutoColumns: "[200px]",
-      gridAutoRows: "[auto]",
-      gridTemplateAreas: `
-        "bx1 bx1 bx2 bx3"
-        "bx1 bx1 bx4 bx5"
-      `,
-      gap: "[1em]",
-
+      gridAutoColumns: "[1fr 1fr]",
       justifyContent: "center",
       alignContent: "center",
     },
@@ -36,13 +70,6 @@ export const grid = sva({
         item: { debug: true },
       },
       false: {},
-    },
-    area: {
-      bx1: { item: { gridArea: "bx1" } },
-      bx2: { item: { gridArea: "bx2" } },
-      bx3: { item: { gridArea: "bx3" } },
-      bx4: { item: { gridArea: "bx4" } },
-      bx5: { item: { gridArea: "bx5" } },
     },
   },
   defaultVariants: { debug: true },
