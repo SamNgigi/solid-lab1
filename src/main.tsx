@@ -1,16 +1,28 @@
-import { render } from "@solidjs/web";
+import { render, Repeat } from "@solidjs/web";
 
 import "./style.css";
-import { mainContainer, gridContainer, gridBox } from "@/components/recipes/grid.recipe";
+import { css } from "@/styled-system/css";
+import { mainContainer, gridContainer, box } from "@/components/recipes/grid.recipe";
 
 function App() {
   return (
     <div class={mainContainer}>
+      <h1 class={css({ fontSize: "4xl", fontWeight: "bold", textAlign: "center", p: "2" })}>
+        Responsive Grid
+      </h1>
       <div class={gridContainer()}>
-        <div class={gridBox({ area: "gb1" })}>1</div>
-        <div class={gridBox()}>2</div>
-        <div class={gridBox()}>3</div>
-        <div class={gridBox({ area: "gb4" })}>4</div>
+        <Repeat count={10}>
+          {(_) => (
+            <div class={box}>
+              <h2 class={css({ fontSize: "2xl", fontWeight: "bold" })}>Lorem Ipsum</h2>
+              <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Harum minus cupiditate ab
+                quia magni numquam vitae, similique eos nam, dolorum sed iste doloremque ullam
+                aperiam eaque assumenda animi ratione quidem!
+              </p>
+            </div>
+          )}
+        </Repeat>
       </div>
     </div>
   );
