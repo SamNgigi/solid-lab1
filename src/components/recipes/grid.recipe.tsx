@@ -13,12 +13,7 @@ export const gridContainer = cva({
     display: "grid",
     gridTemplateColumns: "repeat(3, 208px)",
     gridTemplateRows: "repeat(2, 208px)",
-    gridTemplateAreas: `
-      "gb1 gb1 gb2"
-      "gb3 gb4 gb4"
-    `,
     gap: "1",
-    // alignItems: "center"
     alignContent: "end",
   },
 });
@@ -32,10 +27,8 @@ export const gridBox = cva({
   },
   variants: {
     area: {
-      gb1: { gridArea: "gb1" },
-      gb2: { gridArea: "gb2" },
-      gb3: { gridArea: "gb3" },
-      gb4: { gridArea: "gb4" },
+      gb1: { gridColumn: "1/3" },
+      gb4: { gridColumn: "2/4" },
     },
   },
 });
