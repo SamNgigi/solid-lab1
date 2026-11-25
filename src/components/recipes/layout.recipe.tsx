@@ -1,4 +1,12 @@
-import { sva } from "@/styled-system/css";
+import { css, sva } from "@/styled-system/css";
+
+export const mainContainer = css({
+  debug: true,
+  height: "[100vh]",
+  bg: "gray.950",
+  color: "white",
+  // overflowX: "scroll",
+});
 
 export const flex = sva({
   slots: ["container", "item"],
