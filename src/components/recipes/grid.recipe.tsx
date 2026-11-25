@@ -12,9 +12,8 @@ export const gridContainer = cva({
   base: {
     debug: true,
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(288px, 1fr))",
-    gridAutoRows: "auto",
-    gap: "0.5",
+    gridTemplateColumns: "repeat(auto-fit, 20rem)",
+    gap: "1",
     justifyContent: "center",
   },
 });
@@ -35,7 +34,11 @@ export const gridBox = cva({
 });
 
 export const box = css({
-  width: "fit-content",
+  display: "grid",
+  gridTemplateRows: "subgrid",
+  gridRow: "span 3",
+  textAlign: "center",
+  gap: "5",
   p: "4",
   m: "1",
   bg: "zinc.800",
