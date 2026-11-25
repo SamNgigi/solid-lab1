@@ -1,7 +1,7 @@
 import { cva, css } from "@/styled-system/css";
 
 export const mainContainer = css({
-  // debug: true,
+  debug: true,
   height: "[100vh]",
   bg: "gray.950",
   color: "white",
@@ -10,7 +10,7 @@ export const mainContainer = css({
 
 export const gridContainer = cva({
   base: {
-    // debug: true,
+    debug: true,
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(288px, 1fr))",
     gridAutoRows: "auto",
