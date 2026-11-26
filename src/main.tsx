@@ -1,25 +1,39 @@
-import { createMemo, Loading, lazy } from "solid-js";
+import { createMemo, isPending, Loading } from "solid-js";
 import { render } from "@solidjs/web";
 
 import "./style.css";
-import { css } from "@/styled-system/css";
 import { mainContainer } from "@/components/recipes/layout.recipe";
-import { type GreetingT } from "@/components/ui/other";
+import { button } from "@/components/recipes/button.recipe";
 
-const Greeting = lazy(() => import("@/components/ui/other"), { export: "Greeting" });
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-async function fetchUser(): Promise<GreetingT> {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return { name: "Jed" };
-}
+// INFO: A pretend server: it keeps the like count and takes 600ms to save.
+const api = {
+  likes: 41,
+  async read(): Promise<number> {
+    await sleep(100);
+    return api.likes;
+  },
+  async like(fail: boolean = false) {
+    await sleep(600);
+    if (fail) throw new Error("Could not save your like.");
+    api.likes += 1;
+  },
+};
 
 function App() {
-  const user = createMemo<GreetingT>(fetchUser);
+  const likes = createMemo(() => api.read());
+
+  const like = async () => {
+    await api.like();
+  };
+
   return (
     <div class={mainContainer}>
-      <h1 class={css({ fontSize: "4xl", fontWeight: "bold" })}>Welcome</h1>
-      <Loading fallback={<p>Loading greeting...</p>}>
-        <Greeting {...user()} />
+      <Loading>
+        <button class={button()} onClick={() => like()}>
+          {isPending(likes) ? "Saving..." : `Like (${likes()})`}
+        </button>
       </Loading>
     </div>
   );
