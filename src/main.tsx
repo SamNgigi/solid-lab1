@@ -48,13 +48,7 @@ function App() {
           id="state"
           onChange={(e) => setState(e.currentTarget.value)}
         >
-          <For each={states()}>
-            {(state) => (
-              <option class={optionStyle} value="state">
-                {state}
-              </option>
-            )}
-          </For>
+          <For each={states()}>{(state) => <option class={optionStyle}>{state}</option>}</For>
         </select>
         <select
           class={selectStyle}
@@ -63,13 +57,7 @@ function App() {
           disabled={isPending(cities)}
           onChange={(e) => setCity(e.currentTarget.value)}
         >
-          <For each={cities()}>
-            {(city) => (
-              <option class={optionStyle} value="city">
-                {city}
-              </option>
-            )}
-          </For>
+          <For each={cities()}>{(city) => <option class={optionStyle}>{city}</option>}</For>
         </select>
         <p>
           Selection: {selectedState()}, {selectedCity()}
