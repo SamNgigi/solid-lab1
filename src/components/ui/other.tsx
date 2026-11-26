@@ -1,7 +1,57 @@
 import { css } from "@/styled-system/css";
 
-import { type Accessor, createContext, useContext, createSignal, children, For } from "solid-js";
+import {
+  type Accessor,
+  createContext,
+  useContext,
+  createSignal,
+  children,
+  For,
+  Loading,
+} from "solid-js";
 import { type JSX } from "@solidjs/web";
+
+import type { User, Post, Trivia } from "../../mock_api";
+
+/** START: 4.26 Async Reveal Order */
+type DetailProps = { user?: User };
+const ProfileDetails = (props: DetailProps) => (
+  <h1 class={css({ fontSize: "4xl", fontWeight: "bold" })}>{props.user?.name}</h1>
+);
+
+type TimelineProps = { posts: Post[] };
+const ProfileTimeline = (props: TimelineProps) => (
+  <ul class={css({ listStyleType: "disc", pl: "6" })}>
+    <For each={props.posts}>{(post) => <li>{post.text}</li>}</For>
+  </ul>
+);
+
+type TriviaProps = { trivia: Trivia[] };
+const ProfileTrivia = (props: TriviaProps) => (
+  <>
+    <h2 class={css({ fontSize: "2xl", fontWeight: "bold" })}>Fun Facts</h2>
+    <ul class={css({ listStyleType: "disc", pl: "6" })}>
+      <For each={props.trivia}>{(fact) => <li>{fact.text}</li>}</For>
+    </ul>
+  </>
+);
+
+type ProfilePageProps = { user: User; posts: Post[]; trivia: Trivia[] };
+const ProfilePage = (props: ProfilePageProps) => (
+  <>
+    <Loading fallback={<h1>Loading profile...</h1>}>
+      <ProfileDetails user={props.user} />
+    </Loading>
+    <Loading fallback={<h1>Loading posts...</h1>}>
+      <ProfileTimeline posts={props.posts} />
+    </Loading>
+    <Loading fallback={<h1>Loading trivia...</h1>}>
+      <ProfileTrivia trivia={props.trivia} />
+    </Loading>
+  </>
+);
+
+export default ProfilePage;
 
 /** START: 2.15 Componets: Context */
 
