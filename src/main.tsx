@@ -1,4 +1,4 @@
-import { createMemo, Loading, Errored } from "solid-js";
+import { createSignal, createMemo, Loading } from "solid-js";
 import { render } from "@solidjs/web";
 
 import "./style.css";
@@ -6,44 +6,43 @@ import { css } from "@/styled-system/css";
 import { button } from "@/components/recipes/button.recipe";
 import { mainContainer } from "@/components/recipes/layout.recipe";
 
-let attempt = 0;
-async function fetchReport(): Promise<string> {
-  await new Promise((resolve) => setTimeout(resolve, 300));
-  if (++attempt === 1) {
-    throw new Error("The report service is temporarily unavailable");
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// INFO: A stand-in for an LLM model API that streams its answer word by word.
+async function* fakeModel(topic: string) {
+  const answer = `${topic} are great. Here is a longer answer about ${topic}, streamed\
+  one word at a time so you can read it as it arrives.`;
+  for (const word of answer.split(" ")) {
+    await sleep(120);
+    yield word + " ";
   }
-  return "Report ready";
 }
-
-function Result() {
-  const report = createMemo(fetchReport);
-  return (
-    <Loading fallback={<p>Loading report..</p>}>
-      <p>{report()}</p>
-    </Loading>
-  );
-}
-
-const errorMessage = (error: unknown): string => {
-  return error instanceof Error ? error.message : String(error);
-};
 
 function App() {
+  const [topic, setTopic] = createSignal("Signals");
+  const reply = createMemo(async () => {
+    const current = topic();
+    let text = "";
+    for await (const word of fakeModel(current)) {
+      text += word;
+    }
+    return text;
+  });
+
   return (
     <div class={mainContainer}>
-      <h1 class={css({ fontSize: "2xl", fontWeight: "bold" })}>Async Error</h1>
-      <Errored
-        fallback={(error, reset) => (
-          <div role="alert" class={css({ display: "flex", gap: "2", alignItems: "center" })}>
-            <p>{errorMessage(error())}</p>
-            <button class={button()} onClick={reset}>
-              Try again
-            </button>
-          </div>
-        )}
-      >
-        <Result />
-      </Errored>
+      <p class={css({ display: "flex", gap: "2", alignItems: "center" })}>
+        Ask about{" "}
+        <button class={button()} onClick={() => setTopic("Signals")}>
+          Signals
+        </button>
+        <button class={button()} onClick={() => setTopic("Stores")}>
+          Stores
+        </button>
+      </p>
+      <Loading fallback={<p>Thinking...</p>}>
+        <p>{reply()}</p>
+      </Loading>
     </div>
   );
 }
