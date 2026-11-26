@@ -14,6 +14,18 @@ import { type JSX } from "@solidjs/web";
 
 import type { User, Post, Trivia } from "../../mock_api";
 
+/** START: 4.27 Async: Lazy components */
+type GreetingT = { name: string };
+export function Greeting(props: GreetingT): JSX.Element {
+  return (
+    <Loading fallback={<h3>Loading name...</h3>}>
+      <h3 class={css({ fontSize: "2xl", fontWeight: "bold" })}>Hi {props.name}!</h3>
+    </Loading>
+  );
+}
+export type { GreetingT };
+/** END: 4.27 Async: Lazy components */
+
 /** START: 4.26 Async Reveal Order */
 type DetailProps = { user?: User };
 const ProfileDetails = (props: DetailProps) => (
@@ -58,7 +70,8 @@ const ProfilePage = (props: ProfilePageProps) => (
   </Reveal>
 );
 
-export default ProfilePage;
+export { ProfilePage };
+/** END: 4.26 Async Reveal Order */
 
 /** START: 2.15 Componets: Context */
 
