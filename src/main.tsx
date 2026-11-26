@@ -1,68 +1,49 @@
-import { createSignal, createMemo, Loading, For, isPending } from "solid-js";
+import { createMemo, Loading, Errored } from "solid-js";
 import { render } from "@solidjs/web";
 
 import "./style.css";
 import { css } from "@/styled-system/css";
+import { button } from "@/components/recipes/button.recipe";
 import { mainContainer } from "@/components/recipes/layout.recipe";
 
-const selectStyle = css({
-  m: "1",
-  p: "2",
-  bg: "zinc.800",
-  borderWidth: "1",
-  borderColor: "white",
-});
-const optionStyle = css({ bg: "zinc.800" });
+let attempt = 0;
+async function fetchReport(): Promise<string> {
+  await new Promise((resolve) => setTimeout(resolve, 300));
+  if (++attempt === 1) {
+    throw new Error("The report service is temporarily unavailable");
+  }
+  return "Report ready";
+}
 
-const stateCities = {
-  California: ["Los Angeles", "San Francisco", "San Diego"],
-  Florida: ["Miami", "Orlando", "Tampa"],
-  Texas: ["Houston", "Dallas", "Austin"],
-  Utah: ["Salt Lake City", "Provo", "West Valley City"],
+function Result() {
+  const report = createMemo(fetchReport);
+  return (
+    <Loading fallback={<p>Loading report..</p>}>
+      <p>{report()}</p>
+    </Loading>
+  );
+}
+
+const errorMessage = (error: unknown): string => {
+  return error instanceof Error ? error.message : String(error);
 };
 
-type State = keyof typeof stateCities;
-
-async function getStates() {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return Object.keys(stateCities);
-}
-
-async function getCities(state: State) {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return stateCities[state] ?? [];
-}
-
 function App() {
-  const states = createMemo(getStates);
-  const [selectedState, setState] = createSignal(() => states()[0]);
-  const cities = createMemo(() => getCities(selectedState() as State));
-  const [selectedCity, setCity] = createSignal(() => cities()[0]);
-
   return (
     <div class={mainContainer}>
-      <Loading fallback={<p>Loading...</p>}>
-        <select
-          class={selectStyle}
-          name="states"
-          id="state"
-          onChange={(e) => setState(e.currentTarget.value)}
-        >
-          <For each={states()}>{(state) => <option class={optionStyle}>{state}</option>}</For>
-        </select>
-        <select
-          class={selectStyle}
-          name="cities"
-          id="cities"
-          disabled={isPending(cities)}
-          onChange={(e) => setCity(e.currentTarget.value)}
-        >
-          <For each={cities()}>{(city) => <option class={optionStyle}>{city}</option>}</For>
-        </select>
-        <p>
-          Selection: {selectedState()}, {selectedCity()}
-        </p>
-      </Loading>
+      <h1 class={css({ fontSize: "2xl", fontWeight: "bold" })}>Async Error</h1>
+      <Errored
+        fallback={(error, reset) => (
+          <div role="alert" class={css({ display: "flex", gap: "2", alignItems: "center" })}>
+            <p>{errorMessage(error())}</p>
+            <button class={button()} onClick={reset}>
+              Try again
+            </button>
+          </div>
+        )}
+      >
+        <Result />
+      </Errored>
     </div>
   );
 }
