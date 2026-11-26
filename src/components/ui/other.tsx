@@ -8,6 +8,7 @@ import {
   children,
   For,
   Loading,
+  Reveal,
 } from "solid-js";
 import { type JSX } from "@solidjs/web";
 
@@ -38,17 +39,23 @@ const ProfileTrivia = (props: TriviaProps) => (
 
 type ProfilePageProps = { user: User; posts: Post[]; trivia: Trivia[] };
 const ProfilePage = (props: ProfilePageProps) => (
-  <>
-    <Loading fallback={<h1>Loading profile...</h1>}>
+  <Reveal order="sequential" collapsed>
+    <Loading
+      fallback={<h1 class={css({ fontSize: "4xl", fontWeight: "bold" })}>Loading profile...</h1>}
+    >
       <ProfileDetails user={props.user} />
     </Loading>
-    <Loading fallback={<h1>Loading posts...</h1>}>
+    <Loading
+      fallback={<h2 class={css({ fontSize: "2xl", fontWeight: "bold" })}>Loading posts...</h2>}
+    >
       <ProfileTimeline posts={props.posts} />
     </Loading>
-    <Loading fallback={<h1>Loading trivia...</h1>}>
+    <Loading
+      fallback={<h2 class={css({ fontSize: "2xl", fontWeight: "bold" })}>Loading trivia...</h2>}
+    >
       <ProfileTrivia trivia={props.trivia} />
     </Loading>
-  </>
+  </Reveal>
 );
 
 export default ProfilePage;
