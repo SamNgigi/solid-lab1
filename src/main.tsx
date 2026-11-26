@@ -20,13 +20,12 @@ async function* fakeModel(topic: string) {
 
 function App() {
   const [topic, setTopic] = createSignal("Signals");
-  const reply = createMemo(async () => {
-    const current = topic();
+  const reply = createMemo(async function* () {
+    const current = topic(); // reading input before the first await
     let text = "";
     for await (const word of fakeModel(current)) {
-      text += word;
+      yield (text += word);
     }
-    return text;
   });
 
   return (
