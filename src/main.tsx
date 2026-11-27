@@ -1,7 +1,16 @@
-import { action, affects, createMemo, refresh, isPending, Loading } from "solid-js";
+import {
+  action,
+  createMemo,
+  createOptimistic,
+  createSignal,
+  refresh,
+  isPending,
+  Loading,
+} from "solid-js";
 import { render } from "@solidjs/web";
 
 import "./style.css";
+import { css } from "@/styled-system/css";
 import { mainContainer } from "@/components/recipes/layout.recipe";
 import { compound_button } from "@/components/recipes/button.recipe";
 
@@ -23,12 +32,19 @@ const api = {
 
 function App() {
   const likes = createMemo(() => api.read());
+  const [shown, _setShown] = createOptimistic(() => likes());
+  const [failNext, setFailNext] = createSignal(false);
+  const [error, setError] = createSignal("");
 
-  const like = action(async function* () {
-    affects(likes);
-    yield api.like();
+  const like = action(async function* (fail: boolean) {
+    yield api.like(fail);
     refresh(likes);
   });
+
+  const save = () => {
+    setError("");
+    like(failNext()).catch((err) => setError(err.message));
+  };
 
   const btn = () => compound_button({ loading: isPending(likes), hasLoadingText: true });
 
@@ -39,14 +55,25 @@ function App() {
           class={btn().root}
           disabled={isPending(likes)}
           aria-busy={isPending(likes) ? "true" : undefined}
-          onClick={() => like()}
+          onClick={save}
         >
           <span class={btn().spinner} aria-hidden="true" />
           <span class={btn().content}>
-            <span class={btn().label}>Like ({likes()})</span>
+            <span class={btn().label}>Like ({shown()})</span>
             <span class={btn().loadingLabel}>Saving&hellip;</span>
           </span>
         </button>
+        <label class={css({ mx: "1" })}>
+          <input
+            id="fail-next"
+            name="fail-next"
+            type="checkbox"
+            checked={failNext()}
+            onChange={(event) => setFailNext(event.currentTarget.checked)}
+          />{" "}
+          Fail next save
+        </label>
+        <p role="alert">{error()}</p>
       </Loading>
     </div>
   );
