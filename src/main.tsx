@@ -1,9 +1,9 @@
-import { createMemo, isPending, Loading } from "solid-js";
+import { action, affects, createMemo, refresh, isPending, Loading } from "solid-js";
 import { render } from "@solidjs/web";
 
 import "./style.css";
 import { mainContainer } from "@/components/recipes/layout.recipe";
-import { button } from "@/components/recipes/button.recipe";
+import { compound_button } from "@/components/recipes/button.recipe";
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -24,15 +24,28 @@ const api = {
 function App() {
   const likes = createMemo(() => api.read());
 
-  const like = async () => {
-    await api.like();
-  };
+  const like = action(async function* () {
+    affects(likes);
+    yield api.like();
+    refresh(likes);
+  });
+
+  const btn = () => compound_button({ loading: isPending(likes), hasLoadingText: true });
 
   return (
     <div class={mainContainer}>
       <Loading>
-        <button class={button()} onClick={() => like()}>
-          {isPending(likes) ? "Saving..." : `Like (${likes()})`}
+        <button
+          class={btn().root}
+          disabled={isPending(likes)}
+          aria-busy={isPending(likes) ? "true" : undefined}
+          onClick={() => like()}
+        >
+          <span class={btn().spinner} aria-hidden="true" />
+          <span class={btn().content}>
+            <span class={btn().label}>Like ({likes()})</span>
+            <span class={btn().loadingLabel}>Saving&hellip;</span>
+          </span>
         </button>
       </Loading>
     </div>
