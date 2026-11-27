@@ -27,8 +27,10 @@ function App() {
   const add = action(function* (text: string) {
     const todo = { id: newId(), text, done: false };
     setTodos((draft) => {
-      draft.push(todo);
+      draft.push({ ...todo, pending: true });
     });
+    yield api.add(todo);
+    refresh(todos);
   });
 
   return (
@@ -61,7 +63,10 @@ function App() {
                 id="fail-next"
                 name="fail-next"
                 type="checkbox"
-                onChange={(event) => (api.failNext = event.currentTarget.checked)}
+                onChange={(event) => {
+                  api.failNext = event.currentTarget.checked;
+                  if (!api.failNext) setError("");
+                }}
               />{" "}
               Fail the next toggle
             </label>
@@ -79,7 +84,12 @@ function App() {
               <input
                 type="checkbox"
                 checked={todo.done}
-                onChange={() => toggle(todo.id).catch((err) => setError(err.message))}
+                onChange={() =>
+                  toggle(todo.id).catch((err) => {
+                    setError(err.message);
+                    api.failNext = true;
+                  })
+                }
               />{" "}
               {todo.text}
             </label>
