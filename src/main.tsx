@@ -1,79 +1,90 @@
-import {
-  action,
-  createMemo,
-  createOptimistic,
-  createSignal,
-  refresh,
-  isPending,
-  Loading,
-} from "solid-js";
+import { action, createOptimisticStore, createSignal, refresh, For, Loading } from "solid-js";
 import { render } from "@solidjs/web";
 
 import "./style.css";
 import { css } from "@/styled-system/css";
 import { mainContainer } from "@/components/recipes/layout.recipe";
-import { compound_button } from "@/components/recipes/button.recipe";
+import { button } from "@/components/recipes/button.recipe";
 
-const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// INFO: A pretend server: it keeps the like count and takes 600ms to save.
-const api = {
-  likes: 41,
-  async read(): Promise<number> {
-    await sleep(100);
-    return api.likes;
-  },
-  async like(fail: boolean = false) {
-    await sleep(600);
-    if (fail) throw new Error("Could not save your like.");
-    api.likes += 1;
-  },
-};
+import { api, newId, type Todo } from "@/mock_api";
 
 function App() {
-  const likes = createMemo(() => api.read());
-  const [shown, setShown] = createOptimistic(() => likes());
-  const [failNext, setFailNext] = createSignal(false);
+  type TodoView = Todo & { pending?: boolean };
   const [error, setError] = createSignal("");
+  const [todos, setTodos] = createOptimisticStore<TodoView[]>(() => api.list(), []);
 
-  const like = action(async function* (fail: boolean) {
-    setShown((n) => n + 1);
-    yield api.like(fail);
-    refresh(likes);
+  const toggle = action(function* (id) {
+    setTodos((draft) => {
+      const todo = draft.find((todo) => todo.id === id);
+      if (!todo) return;
+      todo.done = !todo.done;
+      todo.pending = true;
+    });
+    yield api.toggle(id);
+    refresh(todos);
   });
 
-  const save = () => {
-    setError("");
-    like(failNext()).catch((err) => setError(err.message));
-  };
-
-  const btn = () => compound_button({ loading: isPending(likes), hasLoadingText: true });
+  const add = action(function* (text: string) {
+    const todo = { id: newId(), text, done: false };
+    setTodos((draft) => {
+      draft.push(todo);
+    });
+  });
 
   return (
     <div class={mainContainer}>
-      <Loading>
-        <button
-          class={btn().root}
-          disabled={isPending(likes)}
-          aria-busy={isPending(likes) ? "true" : undefined}
-          onClick={save}
-        >
-          <span class={btn().spinner} aria-hidden="true" />
-          <span class={btn().content}>
-            <span class={btn().label}>Like ({shown()})</span>
-            <span class={btn().loadingLabel}>Saving&hellip;</span>
-          </span>
-        </button>
-        <label class={css({ mx: "1" })}>
-          <input
-            id="fail-next"
-            name="fail-next"
-            type="checkbox"
-            checked={failNext()}
-            onChange={(event) => setFailNext(event.currentTarget.checked)}
-          />{" "}
-          Fail next save
-        </label>
+      <Loading fallback={<p>Loading todos...</p>}>
+        <div class={css({ display: "flex", alignItems: "center", gap: "2" })}>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              const form = event.currentTarget;
+              const text = String(new FormData(form).get("text") ?? "").trim();
+              if (text) {
+                add(text);
+              }
+              form.reset();
+            }}
+          >
+            <input
+              id="todo"
+              class={css({ border: "[1px solid #ccc]", rounded: "lg", p: "1.5", m: "0.5" })}
+              placeholder="New todo"
+              name="text"
+              type="text"
+            />
+            <button class={button()}>Add</button>
+          </form>
+          <p role="alert">
+            <label>
+              <input
+                id="fail-next"
+                name="fail-next"
+                type="checkbox"
+                onChange={(event) => (api.failNext = event.currentTarget.checked)}
+              />{" "}
+              Fail the next toggle
+            </label>
+          </p>
+        </div>
+        <For each={todos}>
+          {(todo) => (
+            <label
+              class={css({
+                display: "block",
+                m: "[0.25rem 0]",
+                opacity: todo.pending ? "0.5" : "1",
+              })}
+            >
+              <input
+                type="checkbox"
+                checked={todo.done}
+                onChange={() => toggle(todo.id).catch((err) => setError(err.message))}
+              />{" "}
+              {todo.text}
+            </label>
+          )}
+        </For>
         <p role="alert">{error()}</p>
       </Loading>
     </div>

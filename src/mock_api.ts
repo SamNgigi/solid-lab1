@@ -1,5 +1,40 @@
 import { createMemo } from "solid-js";
 
+/** START: 5.30 Mutations: Optimistic Stores */
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// INFO: A pretend server holding the todo list. Saves take 800;
+type Todo = { id: number; text: string; done: boolean };
+let serverTodos: Todo[] = [
+  { id: 1, text: "Learn actions", done: true },
+  { id: 2, text: "Learn optimistic stores", done: false },
+];
+let nextId = 3;
+export const api = {
+  failNext: false,
+  async list() {
+    await sleep(100);
+    return structuredClone(serverTodos);
+  },
+  async toggle(id: number) {
+    await sleep(800);
+    if (api.failNext) {
+      api.failNext = false;
+      throw new Error("The server rejected the change.");
+    }
+    serverTodos = serverTodos.map((t) => (t.id === id ? { ...t, done: !t.done } : t));
+  },
+  async add(todo: Todo) {
+    await sleep(800);
+    serverTodos = [...serverTodos, todo];
+  },
+};
+
+export const newId = () => nextId++;
+export { type Todo };
+/** END: 5.30 Mutations: Optimistic Stores */
+
+/** START: 5.26 Async: Reveal Order */
 type User = { name: string };
 type Post = { id: number; text: string };
 type Trivia = { id: number; text: string };
@@ -67,3 +102,5 @@ function fetchTrivia(): Promise<Trivia[]> {
 }
 
 export type { User, Post, Trivia };
+
+/** END: 5.26 Async: Reveal Order */
