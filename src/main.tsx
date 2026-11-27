@@ -32,11 +32,12 @@ const api = {
 
 function App() {
   const likes = createMemo(() => api.read());
-  const [shown, _setShown] = createOptimistic(() => likes());
+  const [shown, setShown] = createOptimistic(() => likes());
   const [failNext, setFailNext] = createSignal(false);
   const [error, setError] = createSignal("");
 
   const like = action(async function* (fail: boolean) {
+    setShown((n) => n + 1);
     yield api.like(fail);
     refresh(likes);
   });
