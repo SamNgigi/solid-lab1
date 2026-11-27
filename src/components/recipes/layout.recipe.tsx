@@ -1,11 +1,20 @@
-import { css, sva } from "@/styled-system/css";
+import { cva, sva } from "@/styled-system/css";
 
-export const mainContainer = css({
-  debug: true,
-  height: "[100vh]",
-  bg: "gray.950",
-  color: "white",
-  // overflowX: "scroll",
+export const mainContainer = cva({
+  base: {
+    debug: true,
+    height: "[100vh]",
+    color: "white",
+    // overflowX: "scroll",
+  },
+  variants: {
+    theme: {
+      dark: { bg: "gray.950" },
+      light: { bg: "white" },
+      serpia: { bg: "amber.100" },
+    },
+  },
+  defaultVariants: { theme: "dark" },
 });
 
 export const flex = sva({

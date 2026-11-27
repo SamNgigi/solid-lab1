@@ -1,4 +1,4 @@
-import { action, createOptimisticStore, For, Loading } from "solid-js";
+import { action, createOptimisticStore, until, For, Loading } from "solid-js";
 import { render } from "@solidjs/web";
 
 import "./style.css";
@@ -19,10 +19,11 @@ function App() {
       draft.push({ id, text, pending: true });
     });
     yield server.send({ id, text });
+    yield until(() => messages.some((msg) => msg.id === id));
   });
 
   return (
-    <div class={mainContainer}>
+    <div class={mainContainer()}>
       <Loading fallback={<p>Connecting...</p>}>
         <For each={messages}>
           {(msg) => (
